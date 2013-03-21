@@ -42,7 +42,7 @@ metaversion instance."
               (let [predversion (get nested-hash pred)] ;;metaversion
                 (assoc nested-hash
                   pred
-                  (meta/version-add-successor predversion (:id version)))))
+                  (meta/version-add-successor predversion (:sha version)))))
             h
             (:predecessors version)))
          hash

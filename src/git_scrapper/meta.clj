@@ -38,7 +38,7 @@
 (defn changed-file-generate-xml [changed-file]
   (element :changed
            {:file (:filename changed-file)
-            :type (:change-type changed-file)}))
+            :type (name (:change-type changed-file))}))
 
 
 (defn version-generate-xml [version]
