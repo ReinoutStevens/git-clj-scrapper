@@ -51,7 +51,7 @@ metaversion instance."
 
 
 (defn repository-name [location]
-  (.getName location))
+  (.getName (.getParentFile location)))
 
 
 
