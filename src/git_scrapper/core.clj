@@ -35,3 +35,8 @@
        (meta/product-generate-xml product)
        out-file))))
 
+
+(defn process-repository [location target]
+  (let [product (create-product location)]
+    (process-product product target)
+    nil))
