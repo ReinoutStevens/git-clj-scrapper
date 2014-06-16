@@ -24,7 +24,7 @@
 
 
 (defn process-product [product target-location]
-  (let [output (file target-location)]
+  (let [output (.getAbsoluteFile (file target-location))]
     (when (.exists output)
       (throw (Exception. (str "output file already exists" (.getAbsolutePath output)))))
     (.mkdirs (file (.getParent output)))
