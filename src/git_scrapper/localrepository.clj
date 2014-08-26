@@ -1,27 +1,24 @@
 (ns git-scrapper.localrepository
-  (:use (clj-jgit porcelain querying internal))
-  (:use [clojure.java.io])
+  (:require [clj-jgit 
+             [porcelain :as porcelain]
+             [querying :as querying]
+             [internal :as internal]])
+  (:require [clojure.java.io :as io])
   (:require [git-scrapper.meta :as meta]))
             
 
 
-(defn get-revcommits [repo start]
-  (let [walker (clj-jgit.internal/new-rev-walk repo)]
-    (.markStart walker (.parseCommit walker start))
-    (seq walker)))
-
-
-(defn convert-repository [repo start]
+(defn convert-repository [repo walker]
   "loops over al the commits in the repository and returns
 a hash where the keys are the sha of each version, and the value is the corresponding
 metaversion instance."
-  (let [revcommits (get-revcommits repo start)]
+  (let [revcommits (querying/rev-list repo)]
     (defn loop-commits []
       (reduce
        (fn [hash commit]
-         (let [info (commit-info repo commit)
+         (let [info (querying/commit-info-without-branches repo walker commit)
                id (:id info)
-               predecessors (map #(:id (commit-info repo %))
+               predecessors (map #(:id (querying/commit-info-without-branches repo walker %))
                                  (seq (.getParents commit)))
                author (:author info)
                message (:message info)
@@ -53,15 +50,11 @@ metaversion instance."
 (defn repository-name [location]
   (.getName (.getParentFile location)))
 
-
-
 (defn create-project-from-local-repository [repo-location startstr]
   (let [repository (clj-jgit.porcelain/load-repo repo-location)
         walker  (clj-jgit.internal/new-rev-walk repository)
-        startobj (resolve-object repository startstr)
-        start (.parseCommit walker startobj)
-        versionhash (convert-repository repository start)
-        repo-file (file repo-location)
+        versionhash (convert-repository repository walker)
+        repo-file (io/file repo-location)
         metarepo (meta/->MetaRepository repo-file)
         name (repository-name repo-file)]
     (meta/->MetaProject name versionhash metarepo)))
