@@ -1,4 +1,4 @@
-(defproject git-scrapper "1.0.0-SNAPSHOT"
+(defproject git-scrapper "1.0.1-SNAPSHOT"
   :description "Converts a git repository to an xml file that can be imported by qwalkeko"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [clj-jgit "0.7.6"]
