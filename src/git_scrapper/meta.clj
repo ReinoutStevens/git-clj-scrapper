@@ -50,7 +50,7 @@
   (element :version
    {:author author
     :revision revision
-    :message message
+    :message (clojure.string/replace (clojure.string/replace  message (re-pattern "\\P{ASCII}") "") (re-pattern "\u0001") "")
     :time (format-date time) }
    (map
     (fn [pred]
